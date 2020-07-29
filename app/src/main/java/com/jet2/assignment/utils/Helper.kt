@@ -10,22 +10,22 @@ fun getFormattedNumber(number: Int, suffix: String): String {
         val crore = 10000000
         val lacs = 100000
         val thousand = 1000
-        var value = 0.0
+        var value = 0.0f
         var unit = ""
         if (number >= crore) {
-            value = (number / crore).toDouble()
+            value = (number.toFloat() / crore)
             unit = "Cr"
         } else if (number >= lacs) {
-            value = (number / lacs).toDouble()
+            value = (number.toFloat() / lacs)
             unit = "L"
         } else if (number >= thousand) {
-            value = (number / thousand).toDouble()
+            value = (number.toFloat() / thousand)
             unit = "K"
         } else{
-            value = number.toDouble()
+            value = number.toFloat()
         }
 
-        formattedValue = String.format(Locale.US, "%.1f", value)+ " " + unit
+        formattedValue = "${String.format(Locale.US, "%.1f", value)}$unit $suffix"
     } catch (e: Exception) {
         return formattedValue
     }
@@ -43,15 +43,14 @@ fun getFormattedDayValue(articleDate: String?): String {
     val months = Months.monthsBetween(_articleDate, _now).months
     val years = Years.yearsBetween(_articleDate, _now).years
 
-    val timeDiff = {
-        when{
+    val timeDiff = when{
             years > 0 -> "$years yr"
-            months > 0 -> "$months m"
-            days > 0 -> "$days d"
+            months > 0 -> "$months month"
+            days > 0 -> "$days day"
             hours > 0 -> "$hours hr"
             else -> "$minutes min"
         }
-    }
 
-    return timeDiff.toString()
+
+    return timeDiff
 }

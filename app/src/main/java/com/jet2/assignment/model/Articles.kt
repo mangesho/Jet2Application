@@ -1,5 +1,9 @@
 package com.jet2.assignment.model
 
+import android.widget.ImageView
+import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
+import com.jet2.assignment.R
 import com.jet2.assignment.utils.getFormattedDayValue
 import com.jet2.assignment.utils.getFormattedNumber
 
@@ -23,14 +27,11 @@ data class Articles(val id: String,
                  val media: Media?,
                  val user: User?) {
 
-    val displayDate: String
-        get() = getFormattedDayValue(createdAt)
 
-    val displayCommentCount : String
-        get() = getFormattedNumber(comments, "Comments")
 
-    val displayLikesCount : String
-        get() = getFormattedNumber(likes, "Likes")
+    var displayDate: String = getFormattedDayValue(createdAt)
+    var displayCommentCount : String = getFormattedNumber(comments, "Comments")
+    var displayLikesCount : String = getFormattedNumber(likes, "Likes")
 
 }
 
@@ -46,6 +47,19 @@ data class Media(
     val title: String,
     val url: String){
 
+    companion object {
+        // This will load the image using Glide in imageView of recycler items
+        @BindingAdapter("articleImage")
+        @JvmStatic
+        fun loadArticleImage(view: ImageView, articleImage: String) {
+            Glide.with(view.context)
+                .load(articleImage)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(view)
+
+        }
+    }
 }
 
 
@@ -65,5 +79,18 @@ data class User(
 
     val displyUserName : String
     get() = "$name $lastname"
+
+    companion object {
+        // This will load the image using Glide in imageView of recycler items
+        @BindingAdapter("avatarImage")
+        @JvmStatic
+        fun loadAvatarImage(view: ImageView, avatarImage: String) {
+            Glide.with(view.context)
+                .load(avatarImage)
+                .centerCrop()
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(view)
+        }
+    }
 }
 

@@ -1,6 +1,5 @@
 package com.jet2.assignment.database
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jet2.assignment.model.Articles
@@ -16,14 +15,11 @@ data class ArticlesEntity constructor(
     var content: String,
     var comments: Int,
     var likes: Int,
-    @Embedded
-    var media: List<MediaEntity> = mutableListOf(),
-    @Embedded
-    var user: List<UserEntity> = mutableListOf())
+    var media: List<MediaEntity>,
+    var user: List<UserEntity> )
 
 
 data class MediaEntity(
-    @PrimaryKey
     var id: String,
     var blogId: String,
     var createdAt: String,
@@ -32,7 +28,6 @@ data class MediaEntity(
     var url: String)
 
 data class UserEntity(
-    @PrimaryKey
     var id: String,
     var blogId: String,
     var createdAt: String,
@@ -47,9 +42,9 @@ data class UserEntity(
 
 
 /**
- * Map DatabaseVideos to domain entities
+ * Map database model to user model
  */
-fun List<ArticlesEntity>.asDomainModel(): List<Articles> {
+fun List<ArticlesEntity>.asModel(): List<Articles> {
     return map {
         Articles(
             id = it.id,

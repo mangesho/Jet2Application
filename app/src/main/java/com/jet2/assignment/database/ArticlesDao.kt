@@ -1,16 +1,19 @@
 package com.jet2.assignment.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ArticlesDao {
     @Query("select * from articlesentity")
     fun getArticles(): LiveData<List<ArticlesEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll( articles: List<ArticlesEntity>)
+
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert( article: ArticlesEntity)
 }

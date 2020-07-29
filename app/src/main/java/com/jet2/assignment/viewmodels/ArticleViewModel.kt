@@ -50,22 +50,14 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
     val isShowProgress: LiveData<Boolean>
         get() = _isShowProgress
 
-
-    /**
-     * init{} is called immediately when this ViewModel is created.
-     */
-    init {
-        getData()
-    }
-
     /**
      * get data from the repository. Use a coroutine launch to run in a
      * background thread.
      */
-    private fun getData() {
+    fun getData(pageNumber: Int, pageLimit: Int) {
         viewModelScope.launch {
             try {
-                repository.getArticles(1, PAGE_LIMIT )
+                repository.getArticles(pageNumber, pageLimit )
                 _eventNetworkError.value = false
                 _isShowProgress.value = true
 

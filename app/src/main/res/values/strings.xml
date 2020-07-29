@@ -4,5 +4,6 @@
     <string name="str_article">Articles</string>
     <string name="content_description_avatar_image">Profile Image</string>
     <string name="content_description_article_image">Article Image</string>
+    <string name="no_more_items_to_load">No more items to load!</string>
 
 </resources>

@@ -52,6 +52,11 @@ class ArticlesFragment : Fragment() {
         })
     }
 
+    var isLoading: Boolean = false
+    var pageNumber: Int = 1
+    private val PAGES = 6
+    private val PAGES_LIMIT = 10
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding: FragmentArticlesBinding = DataBindingUtil.inflate(
@@ -68,6 +73,27 @@ class ArticlesFragment : Fragment() {
         binding.root.findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(context)
             adapter = articlesAdapter
+
+            this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    val itemCount = this@apply.layoutManager?.itemCount ?: 0
+                    val lastVisibleItem =
+                        (this@apply.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    if (!isLoading && pageNumber != PAGES
+                        && itemCount == lastVisibleItem + 1
+                    ) {
+                        viewModel.getData(pageNumber+1, PAGES_LIMIT)
+                    } else if (pageNumber == PAGES && itemCount == lastVisibleItem + 1)
+                        Toast.makeText(
+                            context,
+                            getString(R.string.no_more_items_to_load),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                }
+            })
+
+
         }
 
 

@@ -1,6 +1,7 @@
 package com.jet2.assignment.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.jet2.assignment.database.ArticlesDatabase
 import com.jet2.assignment.database.asModel
@@ -11,6 +12,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class ArticlesRepository(private val database: ArticlesDatabase) {
+
+    var hasMoreItems = MutableLiveData<Boolean>(true)
+
 
     val articles: LiveData<List<Articles>> = Transformations.map(database.articlesDao.getArticles()) {
         it.asModel()
@@ -28,6 +32,7 @@ class ArticlesRepository(private val database: ArticlesDatabase) {
             val articles  =
                 NetworkClient.articlesService.getArticles(pageNumber, limit).await()
             database.articlesDao.insertAll(articles.asDatabaseModel())
+            withContext(Dispatchers.Main){hasMoreItems.value = !(articles.isEmpty() || articles.size < limit)}
         }
     }
 

@@ -53,8 +53,8 @@ class ArticlesFragment : Fragment() {
     }
 
     var isLoading: Boolean = false
+    var hasMoreItem: Boolean = true
     var pageNumber: Int = 1
-    private val PAGES = 6
     private val PAGES_LIMIT = 10
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -80,26 +80,31 @@ class ArticlesFragment : Fragment() {
                     val itemCount = this@apply.layoutManager?.itemCount ?: 0
                     val lastVisibleItem =
                         (this@apply.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-                    if (!isLoading && pageNumber != PAGES
+                    if (!isLoading && hasMoreItem
                         && itemCount == lastVisibleItem + 1
                     ) {
-                        viewModel.getData(pageNumber+1, PAGES_LIMIT)
-                    } else if (pageNumber == PAGES && itemCount == lastVisibleItem + 1)
-                        Toast.makeText(
-                            context,
-                            getString(R.string.no_more_items_to_load),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        pageNumber += 1
+                        viewModel.getData(pageNumber, PAGES_LIMIT)
+                    } else if (!hasMoreItem && itemCount == lastVisibleItem + 1)
+                        viewModel.hideProgress()
+
                 }
             })
 
 
         }
 
-
         // Observer for the network error.
         viewModel.eventNetworkError.observe(viewLifecycleOwner, Observer<Boolean> { isNetworkError ->
             if (isNetworkError) onNetworkError()
+        })
+
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer<Boolean> { isLoading ->
+            this.isLoading = isLoading
+        })
+
+        viewModel.hasMoreItems.observe(viewLifecycleOwner, Observer<Boolean> { hasMoreItmes ->
+            this.hasMoreItem = hasMoreItmes
         })
 
         return binding.root

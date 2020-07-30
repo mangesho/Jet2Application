@@ -50,6 +50,18 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
     val isShowProgress: LiveData<Boolean>
         get() = _isShowProgress
 
+
+    private var _isLoading = MutableLiveData<Boolean>(false)
+
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
+
+    private var _hasMoreItems = repository.hasMoreItems
+
+    val hasMoreItems: LiveData<Boolean>
+        get() = _hasMoreItems
+
     /**
      * get data from the repository. Use a coroutine launch to run in a
      * background thread.
@@ -60,6 +72,7 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
                 repository.getArticles(pageNumber, pageLimit )
                 _eventNetworkError.value = false
                 _isShowProgress.value = true
+                _isLoading.value
 
             } catch (networkError: IOException) {
                 // Show a Toast error message and hide the progress bar.
@@ -74,6 +87,7 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
      */
     fun hideProgress() {
         _isShowProgress.value = false
+        _isLoading.value = false
     }
 
 
